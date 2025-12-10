@@ -40,7 +40,7 @@ public class CalcEngine {
         expr = expr.replaceAll("(\\d+(?:\\.\\d+)?)(pow)(\\d+(?:\\.\\d+)?)", "pow($1,$3)");
         expr = expr.replaceAll("pow\\((\\d+(?:\\.\\d+)?),(\\d+(?:\\.\\d+)?)\\)", "$1 $2 pow");
         expr = expr.replaceAll("inv\\((\\d+(?:\\.\\d+)?)\\)", "$1 inv");
-        expr = expr.replaceAll("(\\d+(?:\\.\\d+)?)(square|sqrt|abc|exp|ln|log|tenpow|neg|fact)", "$2($1)");
+        expr = expr.replaceAll("(\\d+(?:\\.\\d+)?)(square|sqrt|abc|exp|ln|log|tenpow|neg|fact)", "$2($1)"); 
         return expr;
     }
 
@@ -73,8 +73,8 @@ public class CalcEngine {
         Stack<String> ops = new Stack<>();
 
         for (String token : tokens) {
-            token = token.trim();
-            if (token.isEmpty()) continue;
+            token = token.trim(); // 空白削除
+            if (token.isEmpty()) continue; // 空トークン無視
 
             if (token.matches("\\d+(\\.\\d+)?")) {
                 output.add(token);

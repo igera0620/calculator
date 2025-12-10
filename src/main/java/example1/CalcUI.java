@@ -169,7 +169,7 @@ public class CalcUI {
             // 一般的な電卓では掛け算になるため下記を記述。
             } else if (
                 text.equals("x²") || text.equals("¹/x") || text.equals("²√x") ||
-                text.equals("log") || text.equals("ln") ||
+                text.equals("exp") || text.equals("log") || text.equals("ln") ||
                 text.equals("n!") || text.equals("+/-") ||
                 text.equals("10ˣ") || text.equals("2nd")
             ) {
@@ -177,9 +177,9 @@ public class CalcUI {
                     String expr = exprField.getText() + text;
                     double result = CalcEngine.evaluate(expr);
                     displayResult(result);
-                    subField.setText(expr);
-                } catch (ArithmeticException e) {
-                    resultField.setText(e.getMessage());
+                    subField.setText("");
+                    exprField.setText("");
+                    lastResult = result;
                 } catch (Exception e) {
                     resultField.setText("Error");
                 }
@@ -236,7 +236,6 @@ public class CalcUI {
                 exprField.setText(current + text);
             }
         }
-
         private void displayResult(double result) {
             DecimalFormat df;
             if (result == (long) result) {
