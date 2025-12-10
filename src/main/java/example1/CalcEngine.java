@@ -17,15 +17,12 @@ public class CalcEngine {
 
     // 関数名の変換
     public static String convertFunction(String expr) {
-        expr = expr.replace("|x|", "abc(0)");
-        expr = expr.replaceAll("(\\d+(?:\\.\\d+)?)(abc)", "abc($1)");
-        expr = expr.replaceAll("abc\\((\\d+(?:\\.\\d+)?)\\)", "$1 abc");
-
+        expr = expr.replace("|x|", "abc");
         expr = expr.replace("¹/x", "inv");
         expr = expr.replace("x²", "square");
         expr = expr.replace("ln", "ln");
         expr = expr.replace("log", "log");
-        expr = expr.replace("exp", "exp");
+        expr = expr.replace("exp", "tenpow");
         expr = expr.replace("+/-", "neg");
         expr = expr.replace("n!", "fact");
         expr = expr.replace("xʸ", "pow");

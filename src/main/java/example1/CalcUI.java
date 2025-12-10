@@ -169,7 +169,7 @@ public class CalcUI {
             // 一般的な電卓では掛け算になるため下記を記述。
             } else if (
                 text.equals("x²") || text.equals("¹/x") || text.equals("²√x") ||
-                text.equals("exp") || text.equals("log") || text.equals("ln") ||
+                text.equals("log") || text.equals("ln") ||
                 text.equals("n!") || text.equals("+/-") ||
                 text.equals("10ˣ") || text.equals("2nd")
             ) {
