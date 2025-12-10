@@ -177,6 +177,8 @@ public class CalcUI {
                     String expr = exprField.getText() + text;
                     double result = CalcEngine.evaluate(expr);
                     displayResult(result);
+                } catch (ArithmeticException e) {
+                    resultField.setText(e.getMessage());
                 } catch (Exception e) {
                     resultField.setText("Error");
                 }

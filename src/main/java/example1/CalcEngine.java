@@ -159,7 +159,7 @@ public class CalcEngine {
                 case "/" -> {
                     double b = stack.pop();
                     double a = stack.pop();
-                    if (b == 0.0) throw new ArithmeticException("0では割れません！");
+                    if (b == 0.0) throw new ArithmeticException("0で割ることは出来ません");
                     stack.push(a / b);
                 }
                 case "mod" -> {
@@ -181,7 +181,13 @@ public class CalcEngine {
                         stack.push(Math.pow(a, 1.0 / b));
                     }
                 }
-                case "inv" -> stack.push(1.0 / stack.pop());
+                case "inv" -> {
+                    double v = stack.pop();
+                    if (v == 0.0) {
+                        throw new ArithmeticException("0で割ることは出来ません");
+                    }
+                    stack.push(1.0 / v);
+                }
                 case "square" -> {
                     double a = stack.pop();
                     stack.push(a * a);
