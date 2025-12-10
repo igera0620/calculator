@@ -177,6 +177,7 @@ public class CalcUI {
                     String expr = exprField.getText() + text;
                     double result = CalcEngine.evaluate(expr);
                     displayResult(result);
+                    subField.setText(expr);
                 } catch (ArithmeticException e) {
                     resultField.setText(e.getMessage());
                 } catch (Exception e) {
@@ -235,6 +236,7 @@ public class CalcUI {
                 exprField.setText(current + text);
             }
         }
+
         private void displayResult(double result) {
             DecimalFormat df;
             if (result == (long) result) {

@@ -195,7 +195,13 @@ public class CalcEngine {
                 case "log" -> stack.push(Math.log10(stack.pop()));
                 case "tenpow" -> stack.push(Math.pow(10.0, stack.pop()));
                 case "neg" -> stack.push(-stack.pop());
-                case "fact" -> stack.push(factorial(stack.pop().intValue()));
+                case "fact" -> {
+                    if (stack.isEmpty()) {
+                        stack.push(1.0); // 単体でfactが来た場合は1
+                    } else {
+                        stack.push(factorial(stack.pop().intValue()));
+                    }
+                }
                 default -> {
                     // 予期しないトークン
                     System.err.println("未知のトークン: " + token);
