@@ -195,31 +195,27 @@ public class CalcUI {
                         df = new DecimalFormat("#,###.############");
                         resultStr = df.format(result);
                     }
-                    if (String.valueOf(result).equals("0.0")) {
-                        subField.setText(""); // 0.0だけ空欄
+                    // lastResultが整数なら小数点なしで表示
+                    String lastResultStr;
+                    if (lastResult == (long) lastResult) {
+                        lastResultStr = String.valueOf((long) lastResult);
                     } else {
-                        // lastResultが整数なら小数点なしで表示
-                        String lastResultStr;
-                        if (lastResult == (long) lastResult) {
-                            lastResultStr = String.valueOf((long) lastResult);
-                        } else {
-                            lastResultStr = String.valueOf(lastResult);
-                        }
-                        // exprの先頭がlastResultの場合だけ置換
-                        String displayExpr = expr.replaceFirst("^" + lastResult, lastResultStr)
-                                .replaceAll("\\(0\\.0-", "(-")
-                                .replaceAll("^0\\.0-", "-")
-                                .replaceAll("0\\.0-", "-")
-                                .replaceAll("^0-", "-");
-
-                        int maxLengthSub = 20;
-                        if (displayExpr.length() > maxLengthSub) {
-                            displayExpr = displayExpr.substring(0, maxLengthSub); // 長い場合は省略
-                        }
-                        subField.setText(displayExpr);
+                        lastResultStr = String.valueOf(lastResult);
                     }
+                    // exprの先頭がlastResultの場合だけ置換
+                    String displayExpr = expr.replaceFirst("^" + lastResult, lastResultStr)
+                            .replaceAll("\\(0\\.0-", "(-")
+                            .replaceAll("^0\\.0-", "-")
+                            .replaceAll("0\\.0-", "-")
+                            .replaceAll("^0-", "-");
+
+                    int maxLengthSub = 20;
+                    if (displayExpr.length() > maxLengthSub) {
+                        displayExpr = displayExpr.substring(0, maxLengthSub); // 長い場合は省略
+                    }
+                    subField.setText(displayExpr);
                     resultField.setText(resultStr); // 結果を上のディスプレイに表示
-                    exprField.setText(""); // 右画面の式を削除
+                    exprField.setText(""); // 右画面の式を削除//
                     adjustFontToFit(resultField); // adjustFontTofitメソッドで自動調整してる
                     adjustFontToFit(subField); // 同上
                     lastResult = result; // 結果に対して計算が出来る様に、裏でデータが残るようにしてる
@@ -233,9 +229,10 @@ public class CalcUI {
                 // UIに記述。windowsの関数電卓では3πと入力しても掛け算にはならないが、
                 // 一般的な電卓では掛け算になるため下記を記述。
             } else if (text.equals("x²") || text.equals("¹/x") || text.equals("²√x") ||
-                    text.equals("log") || text.equals("ln") ||
-                    text.equals("n!") || text.equals("+/-") ||
-                    text.equals("10ˣ") || text.equals("2nd")) {
+                    text.equals("log") || text.equals("ln") || text.equals("n!") ||
+                    text.equals("+/-") || text.equals("10ˣ") || text.equals("2nd") ||
+                    text.equals("x³") || text.equals("³√x") ||
+                    text.equals("2ˣ") || text.equals("eˣ")) {
                 try {
                     String expr = exprField.getText() + text;
                     double result = CalcEngine.evaluate(expr);
