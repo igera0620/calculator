@@ -50,7 +50,11 @@ public class CalcUI {
                 btn.setOpaque(true);
                 btn.setBorderPainted(false);
 
-                btn.addActionListener(e -> onButton(text)); // ボタン押下イベント
+                btn.addActionListener(e -> {
+                    JButton src = (JButton) e.getSource(); // 実際に押されたボタン
+                    String label = src.getText(); // 今の表示文字（x² or x³）
+                    onButton(label);
+                });
                 panel.add(btn);
 
                 switch (text) {
@@ -229,7 +233,7 @@ public class CalcUI {
                 // UIに記述。windowsの関数電卓では3πと入力しても掛け算にはならないが、
                 // 一般的な電卓では掛け算になるため下記を記述。
             } else if (text.equals("x²") || text.equals("¹/x") || text.equals("²√x") ||
-                    text.equals("exp") || text.equals("log") || text.equals("ln") ||
+                    text.equals("log") || text.equals("ln") ||
                     text.equals("n!") || text.equals("+/-") ||
                     text.equals("10ˣ") || text.equals("2nd")) {
                 try {

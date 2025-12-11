@@ -29,6 +29,12 @@ public class CalcEngine {
         expr = expr.replace("²√x", "root");
         expr = expr.replace("mod", "mod");
         expr = expr.replace("10ˣ", "tenpow");
+        expr = expr.replace("x³", "cube");
+        expr = expr.replace("³√x", "cuberoot");
+        expr = expr.replace("y√x", "nthroot");
+        expr = expr.replace("2ˣ", "twopow");
+        expr = expr.replace("logʸx", "logyx");
+        expr = expr.replace("eˣ", "exp");
 
         expr = expr.replace("^(\u221ax)", "sqrt(0)");
         expr = expr.replaceAll("^(x²)", "square(0)");
@@ -40,13 +46,27 @@ public class CalcEngine {
         expr = expr.replaceAll("(\\d+(?:\\.\\d+)?)(pow)(\\d+(?:\\.\\d+)?)", "pow($1,$3)");
         expr = expr.replaceAll("pow\\((\\d+(?:\\.\\d+)?),(\\d+(?:\\.\\d+)?)\\)", "$1 $2 pow");
         expr = expr.replaceAll("inv\\((\\d+(?:\\.\\d+)?)\\)", "$1 inv");
-        expr = expr.replaceAll("(\\d+(?:\\.\\d+)?)(square|sqrt|abc|exp|ln|log|tenpow|neg|fact)", "$2($1)"); 
+        expr = expr.replaceAll("(\\d+(?:\\.\\d+)?)(square|sqrt|abc|exp|ln|log|tenpow|neg|fact)", "$2($1)");
         return expr;
     }
 
     // トークン分割
     public static String[] tokenize(String expr) {
-        return expr.split("(?<=[-+*/()])|(?=[-+*/()])|(?<=mod)|(?=mod)|(?<=[a-zA-Z])(?=\\d)|\\s+");
+
+        // 数字 + 新関数 の切れ目を強制して空白を入れる
+        expr = expr.replaceAll("(\\d)(cube|cuberoot|nthroot|twopow|logyx)", "$1 $2");
+
+        // 新関数 + 数字（例：pow5）も切る
+        expr = expr.replaceAll("(cube|cuberoot|nthroot|twopow|logyx)(\\d)", "$1 $2");
+
+        // tokenize（既存）
+        return expr.split(
+                "(?<=[-+*/()])" // 演算子の後
+                        + "|(?=[-+*/()])" // 演算子の前
+                        + "|(?<=mod)" // mod の後
+                        + "|(?=mod)" // mod の前
+                        + "|(?<=[a-zA-Z])(?=\\d)" // 関数名 → 数字
+                        + "|\\s+");
     }
 
     // 単項マイナスの前処理
@@ -74,7 +94,8 @@ public class CalcEngine {
 
         for (String token : tokens) {
             token = token.trim(); // 空白削除
-            if (token.isEmpty()) continue; // 空トークン無視
+            if (token.isEmpty())
+                continue; // 空トークン無視
 
             if (token.matches("\\d+(\\.\\d+)?")) {
                 output.add(token);
@@ -87,7 +108,7 @@ public class CalcEngine {
             if (isOperator(token)) {
                 while (!(ops.isEmpty() || ops.peek().equals("(") ||
                         precedence(ops.peek()) <= precedence(token) &&
-                        (precedence(ops.peek()) != precedence(token) || isRightAssociative(token)))) {
+                                (precedence(ops.peek()) != precedence(token) || isRightAssociative(token)))) {
                     output.add(ops.pop());
                 }
                 ops.push(token);
@@ -156,7 +177,8 @@ public class CalcEngine {
                 case "/" -> {
                     double b = stack.pop();
                     double a = stack.pop();
-                    if (b == 0.0) throw new ArithmeticException("0で割ることは出来ません");
+                    if (b == 0.0)
+                        throw new ArithmeticException("0で割ることは出来ません");
                     stack.push(a / b);
                 }
                 case "mod" -> {
@@ -202,6 +224,28 @@ public class CalcEngine {
                         stack.push(factorial(stack.pop().intValue()));
                     }
                 }
+                case "cube" -> {
+                    double a = stack.pop();
+                    stack.push(a * a * a);
+                }
+                case "cuberoot" -> {
+                    double a = stack.pop();
+                    stack.push(Math.cbrt(a));
+                }
+                case "nthroot" -> {
+                    double y = stack.pop();
+                    double x = stack.pop();
+                    stack.push(Math.pow(x, 1.0 / y));
+                }
+                case "twopow" -> {
+                    double a = stack.pop();
+                    stack.push(Math.pow(2.0, a));
+                }
+                case "logyx" -> {
+                    double y = stack.pop();
+                    double x = stack.pop();
+                    stack.push(Math.log(x) / Math.log(y));
+                }
                 default -> {
                     // 予期しないトークン
                     System.err.println("未知のトークン: " + token);
@@ -233,17 +277,20 @@ public class CalcEngine {
         };
     }
 
-    private static boolean isFunction(String token) {
+    private static boolean isFunction(String token) { //
         return switch (token) {
-            case "inv", "square", "abc", "exp", "ln", "log", "tenpow", "neg", "fact" -> true;
+            case "inv", "square", "abc", "exp", "ln", "log", "tenpow", "neg", "fact",
+                    "cube", "cuberoot", "nthroot", "twopow", "logyx" -> true;
             default -> false;
         };
     }
 
     private static double factorial(int n) {
-        if (n < 0) throw new ArithmeticException("階乗は負の数に定義されていません");
+        if (n < 0)
+            throw new ArithmeticException("階乗は負の数に定義されていません");
         double result = 1.0;
-        for (int i = 2; i <= n; i++) result *= i;
+        for (int i = 2; i <= n; i++)
+            result *= i;
         return result;
     }
 }
