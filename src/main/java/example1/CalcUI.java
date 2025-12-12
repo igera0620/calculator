@@ -228,9 +228,34 @@ public class CalcUI {
                 // CalcEngineの方でπとeを変換しようとすると、expの計算をする際に不要な変換を行ってしまうため
                 // UIに記述。windowsの関数電卓では3πと入力しても掛け算にはならないが、
                 // 一般的な電卓では掛け算になるため下記を記述。
+            } else if (text.equals("+/-")) {
+                // 最後の数値の符号を反転
+                String current = exprField.getText();
+                if (current.isEmpty()) return;
+                
+                // 最後の数値を抽出する正規表現
+                // 数値のパターン: 先頭の-を含む可能性のある数字と小数点
+                String pattern = "(-?\\d+\\.?\\d*)$";
+                java.util.regex.Pattern p = java.util.regex.Pattern.compile(pattern);
+                java.util.regex.Matcher m = p.matcher(current);
+                
+                if (m.find()) {
+                    String lastNumber = m.group(1);
+                    String beforeNumber = current.substring(0, m.start());
+                    
+                    // 符号を反転
+                    String newNumber;
+                    if (lastNumber.startsWith("-")) {
+                        newNumber = lastNumber.substring(1); // マイナスを削除
+                    } else {
+                        newNumber = "-" + lastNumber; // マイナスを追加
+                    }
+                    
+                    exprField.setText(beforeNumber + newNumber);
+                }
             } else if (text.equals("x²") || text.equals("¹/x") || text.equals("²√x") ||
                     text.equals("log") || text.equals("ln") || text.equals("n!") ||
-                    text.equals("+/-") || text.equals("10ˣ") || text.equals("2nd") ||
+                    text.equals("10ˣ") || text.equals("2nd") ||
                     text.equals("x³") || text.equals("³√x") ||
                     text.equals("2ˣ") || text.equals("eˣ")) {
                 try {
@@ -278,7 +303,7 @@ public class CalcUI {
 
                 int maxLength = 12;
                 if (current.length() >= maxLength) {
-                    Toolkit.getDefaultToolkit().beep(); // ピッと音を鳴らす（任意）
+                    Toolkit.getDefaultToolkit().beep(); // ピッと音を鳴らす
                     return; // これ以上入力しない
                 }
                 // 演算子重複防止ロジック（このままでOK）
@@ -292,7 +317,6 @@ public class CalcUI {
                     }
                     // current.isEmpty() の場合の分岐は不要
                 }
-                // ここをシンプルに
                 exprField.setText(current + text);
             }
         }
