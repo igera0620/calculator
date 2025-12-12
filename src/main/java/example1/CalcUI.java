@@ -301,7 +301,7 @@ public class CalcUI {
             } else {
                 String current = exprField.getText(); // current変数にexprFieldの値を取得してる
 
-                int maxLength = 12;
+                int maxLength = 13;
                 if (current.length() >= maxLength) {
                     Toolkit.getDefaultToolkit().beep(); // ピッと音を鳴らす
                     return; // これ以上入力しない

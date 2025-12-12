@@ -59,6 +59,8 @@ public class CalcEngine {
         // 新関数 + 数字（例：pow5）も切る
         expr = expr.replaceAll("(cube|cuberoot|nthroot|twopow|logyx)(\\d)", "$1 $2");
 
+        expr = expr.replaceAll("\\)\\(", ")*(");
+
         // tokenize（既存）
         return expr.split(
                 "(?<=[-+*/()])" // 演算子の後
